@@ -2,18 +2,26 @@
 
 import './globals.css';
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const router = useRouter();
   const pathname = usePathname();
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token && pathname !== '/login') {
+      router.push('/login');
+    }
+  }, [pathname, router]);
 
   const isLoginPage = pathname === '/login';
 

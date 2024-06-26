@@ -1,3 +1,4 @@
+"use client";
 import withAuth from "@/utils/withAuth";
 
 const Despesas = () => {
