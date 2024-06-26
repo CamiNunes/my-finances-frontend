@@ -1,17 +1,21 @@
-"use client"
+"use client";
 
 import './globals.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
+
+  const isLoginPage = pathname === '/login';
 
   return (
     <html lang="pt-BR">
@@ -20,11 +24,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="description" content="Gerenciamento de finanças pessoais" />
       </head>
       <body className="flex h-screen">
-        <Sidebar isOpen={isSidebarOpen} />
+        {!isLoginPage && <Sidebar isOpen={isSidebarOpen} />}
         <div className="flex flex-col flex-grow">
-          <Header toggleSidebar={toggleSidebar} />
+          {!isLoginPage && <Header toggleSidebar={toggleSidebar} />}
           <main className="flex-grow p-4">{children}</main>
-          <Footer />
+          {!isLoginPage && <Footer />}
         </div>
       </body>
     </html>
