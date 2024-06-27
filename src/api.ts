@@ -116,3 +116,14 @@ export const criarDespesa = async (novaDespesa: DespesaBackend) => {
     throw error;
   }
 };
+
+export const deletarDespesa = async (id: string) => {
+  try {
+    const response = await api.delete(`/api/Despesas/despesas/${id}`);
+    console.log(`Despesa com ID ${id} deletada com sucesso.`);
+    return response.data; 
+  } catch (error) {
+    console.error(`Erro ao deletar despesa com ID ${id}:`, error);
+    throw error;
+  }
+};

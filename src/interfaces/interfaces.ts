@@ -10,12 +10,13 @@ export interface ReceitaBackend {
 }
 
 export interface DespesaBackend {
+  id: string;
   valor: number;
   dataPagamento: string | null;
   descricao: string;
   categoria: string;
   statusReceita: string;
-  recebido: boolean;
+  pago: boolean;
   dataVencimento: string;
   tipoReceita: number;
 }

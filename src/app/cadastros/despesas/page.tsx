@@ -1,5 +1,5 @@
 "use client";
-import { criarDespesa, listarCategorias, listarDespesas } from "@/api";
+import { criarDespesa, deletarDespesa, listarCategorias, listarDespesas } from "@/api";
 import { DespesaBackend } from "@/interfaces/interfaces";
 import withAuth from "@/utils/withAuth";
 import { useEffect, useState } from "react";
@@ -14,6 +14,7 @@ interface Categoria {
 }
 
 interface Despesa {
+  id: string;
   descricao: string;
   valor: number;
   dataPagamento: Date | null;
@@ -21,12 +22,13 @@ interface Despesa {
   categoria: string;
   statusDespesa: string;
   tipoDespesa: 'Casa' | 'Pessoal';
-  recebido: boolean;
+  pago: boolean;
 }
 
 const Despesas = () => {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [despesa, setDespesa] = useState<Despesa>({
+    id: '',
     descricao: '',
     valor: 0,
     dataPagamento: null,
@@ -34,7 +36,7 @@ const Despesas = () => {
     categoria: '',
     statusDespesa: '',
     tipoDespesa: 'Casa',
-    recebido: true
+    pago: true
   });
   const [despesas, setDespesas] = useState<Despesa[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,15 +60,45 @@ const Despesas = () => {
 
   const mapDespesaToBackend = (despesa: Despesa): DespesaBackend => {
     return {
+      id: despesa.id,
       valor: despesa.valor,
       dataPagamento: despesa.dataPagamento ? despesa.dataPagamento.toISOString() : null,
       descricao: despesa.descricao,
       categoria: despesa.categoria,
       statusReceita: despesa.statusDespesa,
-      recebido: despesa.recebido,
+      pago: despesa.pago,
       dataVencimento: despesa.dataVencimento.toISOString(),
       tipoReceita: despesa.tipoDespesa === 'Casa' ? 1 : 2
     };
+  };
+
+  const handleDeletarDespesa = async (id: string) => {
+    try {
+      await deletarDespesa(id);
+
+      // Atualize o estado local removendo a despesa deletada
+      setDespesas((prevDespesas) => prevDespesas.filter((despesa) => despesa.id !== id));
+
+      // Exiba uma mensagem de sucesso
+      Swal.fire({
+        position: "top-end",
+        icon: 'success',
+        title: 'Despesa deletada com sucesso!',
+        showConfirmButton: false,
+        timer: 1500
+      });
+    } catch (error) {
+      console.error('Erro ao deletar despesa:', error);
+
+      // Exiba uma mensagem de erro
+      Swal.fire({
+        position: "top-end",
+        icon: 'error',
+        title: 'Erro ao deletar despesa',
+        text: 'Ocorreu um erro ao deletar a despesa. Por favor, tente novamente mais tarde.',
+        confirmButtonText: 'Ok'
+      });
+    }
   };
 
   const handleSaveDespesa = async (event: React.FormEvent) => {
@@ -82,6 +114,7 @@ const Despesas = () => {
 
       // Limpe os campos do formulário e feche o modal
       setDespesa({
+        id: '',
         descricao: '',
         valor: 0,
         dataPagamento: null,
@@ -89,7 +122,7 @@ const Despesas = () => {
         categoria: '',
         statusDespesa: '',
         tipoDespesa: 'Casa',
-        recebido: true
+        pago: true
       });
       setIsModalOpen(false);
 
@@ -168,11 +201,11 @@ const Despesas = () => {
                 <option value="Pessoal">Pessoal</option>
               </select>
               
-              <label htmlFor="recebido" className="block text-sm font-medium text-gray-100">Recebido</label>
+              <label htmlFor="recebido" className="block text-sm font-medium text-gray-100">Pago</label>
               <select 
                 id="recebido" 
-                value={despesa.recebido ? 'Sim' : 'Não'} 
-                onChange={(e) => setDespesa({ ...despesa, recebido: e.target.value === 'Sim' })} 
+                value={despesa.pago ? 'Sim' : 'Não'} 
+                onChange={(e) => setDespesa({ ...despesa, pago: e.target.value === 'Sim' })} 
                 className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100">
                 <option value="Sim">Sim</option>
                 <option value="Não">Não</option>
@@ -214,7 +247,11 @@ const Despesas = () => {
                 <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{despesa.statusDespesa}</td>
                 <td>
                   <button className="px-4 py-2 mr-2 whitespace-nowrap text-xs font-medium text-white bg-slate-700 rounded-md hover:bg-slate-500"><FaEdit size={16}/></button>
-                  <button className="px-4 py-2 whitespace-nowrap text-xs font-medium text-white bg-red-800 rounded-md hover:bg-red-600"><IoTrashBin size={16}/></button>
+                  <button 
+                    onClick={() => handleDeletarDespesa(despesa.id!)} 
+                    className="px-4 py-2 whitespace-nowrap text-xs font-medium text-white bg-red-800 rounded-md hover:bg-red-600">
+                    <IoTrashBin size={16}/>
+                  </button>
                 </td>
               </tr>
             ))}
