@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { MdDelete } from 'react-icons/md';
 import { deletarCategoria, listarCategorias } from '../api';
+import { FaEdit } from 'react-icons/fa';
+import { IoTrashBin } from 'react-icons/io5';
 
 interface Categoria {
   id: number;
@@ -33,31 +35,24 @@ const CategoriaList: React.FC<CategoriaListProps> = ({ categorias }) => {
   };
 
   return (
-    <div className="overflow-x-auto mt-2">
-      <table className="w-full bg-white border-collapse" style={{ borderSpacing: '0 8px' }}>
+    <div className="overflow-x-auto w-full mt-4">
+      <table className="w-full bg-white border-collapse">
         <thead>
-          <tr className="bg-gray-300">
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Descrição</th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase">Ações</th>
+          <tr className="bg-zinc-900">
+            <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Descrição</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Ações</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-200">
+        <tbody className="divide-y divide-gray-700">
           {categoriasList.map((categoria, index) => (
-            <tr
-              key={categoria.id}
-              className="bg-gray-200 shadow-md transition duration-300 ease-in-out hover:bg-gray-300"
-              style={{ borderRadius: '8px' }}
-            >
-              <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-black rounded-l-lg">{categoria.descricao}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-right">
-                <button className="px-3 py-1 text-xs font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600">Editar</button>
-                <button
-                  onClick={() => handleDelete(categoria.id)}
-                  className="px-3 py-1 text-xs font-medium text-white bg-red-500 rounded-md hover:bg-red-600 ml-2"
-                  disabled={loading}
-                >
-                  {loading ? 'Excluindo...' : 'Excluir'}
-                </button>
+            <tr key={index} className='bg-zinc-800'>
+              <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{categoria.descricao}</td>
+              <td>
+              <button className="px-4 py-2 mr-2 whitespace-nowrap text-xs font-medium text-white bg-slate-700 rounded-md hover:bg-slate-500"><FaEdit size={16}/></button>
+              <button
+                onClick={() => handleDelete(categoria.id)}
+                className="px-4 py-2 whitespace-nowrap text-xs font-medium text-white bg-red-800 rounded-md hover:bg-red-600"><IoTrashBin size={16}/>
+              </button>
               </td>
             </tr>
           ))}

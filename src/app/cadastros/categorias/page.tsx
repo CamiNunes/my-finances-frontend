@@ -68,7 +68,7 @@ const Categorias = () => {
 
   return (
     <div>
-      <button onClick={() => setIsModalOpen(true)} className="bg-green-500 text-white px-4 py-2 mt-4 rounded-md w-full mb-4">Adicionar Categoria</button>
+      <button onClick={() => setIsModalOpen(true)} className="bg-green-800 text-white px-4 py-2 mt-4 rounded-md w-full">Adicionar Categoria</button>
       <CategoriaList categorias={categorias} />
       {isModalOpen && (
         <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">

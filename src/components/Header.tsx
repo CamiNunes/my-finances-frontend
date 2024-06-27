@@ -31,7 +31,7 @@ const Header: FC<HeaderProps> = ({ toggleSidebar }) => {
   };
 
   return (
-    <header className="bg-zinc-800 p-4 flex justify-between items-center shadow-md">
+    <header className="bg-zinc-900 text-slate-200 p-4 flex justify-between items-center shadow-md">
       <button onClick={toggleSidebar} className="md:hidden">
         <FiMenu size={24} />
       </button>

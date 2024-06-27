@@ -31,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <title>Finanças Pessoais</title>
         <meta name="description" content="Gerenciamento de finanças pessoais" />
       </head>
-      <body className="flex h-screen">
+      <body className="flex h-screen text-foreground bg-background">
         {!isLoginPage && <Sidebar isOpen={isSidebarOpen} />}
         <div className="flex flex-col flex-grow">
           {!isLoginPage && <Header toggleSidebar={toggleSidebar} />}

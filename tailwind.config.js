@@ -1,11 +1,16 @@
-/** @type {import('tailwindcss').Config} */
+// tailwind.config.js
 module.exports = {
+  darkMode: 'media', // ou 'class' se preferir usar classes para modo escuro
   content: [
-    "./src/app/**/*.{js,ts,jsx,tsx}",
-    "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,ts,jsx,tsx}", // Ajuste de acordo com a estrutura do seu projeto
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        background: 'var(--background-start-rgb)',
+        foreground: 'var(--foreground-rgb)',
+      },
+    },
   },
   plugins: [],
 };
