@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { listarCategorias, listarReceitas, criarReceita } from '@/api';
+import { listarCategorias, listarReceitas, criarReceita, deletarReceita } from '@/api';
 import Swal from 'sweetalert2';
 import { ReceitaBackend } from '@/interfaces/interfaces';
 import withAuth from '@/utils/withAuth';
@@ -14,8 +14,8 @@ import { TiCancel } from "react-icons/ti";
 interface Categoria {
   descricao: string;
 }
-
 interface Receita {
+  id: string;
   descricao: string;
   valor: number;
   dataLancamento: Date;
@@ -29,6 +29,7 @@ interface Receita {
 const Receitas = () => {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [receita, setReceita] = useState<Receita>({
+    id: '',
     descricao: '',
     valor: 0,
     dataLancamento: new Date(),
@@ -60,6 +61,7 @@ const Receitas = () => {
 
   const mapReceitaToBackend = (receita: Receita): ReceitaBackend => {
     return {
+      id: receita.id,
       valor: receita.valor,
       dataLancamento: receita.dataLancamento.toISOString(),
       descricao: receita.descricao,
@@ -69,6 +71,35 @@ const Receitas = () => {
       dataRecebimento: receita.dataRecebimento.toISOString(),
       tipoReceita: receita.tipoReceita === 'Casa' ? 1 : 2
     };
+  };
+
+  const handleDeletarReceita = async (id: string) => {
+    try {
+      await deletarReceita(id);
+
+      // Atualize o estado local removendo a despesa deletada
+      setReceitas((prevReceitas) => prevReceitas.filter((receita) => receita.id !== id));
+
+      // Exiba uma mensagem de sucesso
+      Swal.fire({
+        position: "top-end",
+        icon: 'success',
+        title: 'Receita deletada com sucesso!',
+        showConfirmButton: false,
+        timer: 1500
+      });
+    } catch (error) {
+      console.error('Erro ao deletar Rrceita:', error);
+
+      // Exiba uma mensagem de erro
+      Swal.fire({
+        position: "top-end",
+        icon: 'error',
+        title: 'Erro ao deletar receita',
+        text: 'Ocorreu um erro ao deletar a receita. Por favor, tente novamente mais tarde.',
+        confirmButtonText: 'Ok'
+      });
+    }
   };
 
   const handleSaveReceita = async (event: React.FormEvent) => {
@@ -84,6 +115,7 @@ const Receitas = () => {
 
       // Limpe os campos do formulário e feche o modal
       setReceita({
+        id: '',
         descricao: '',
         valor: 0,
         dataLancamento: new Date(),
@@ -209,7 +241,11 @@ const Receitas = () => {
                 {/* <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{receita.recebido ? 'Sim' : 'Não'}</td> */}
                 <td>
                   <button className="px-4 py-2 mr-2 whitespace-nowrap text-xs font-medium text-white bg-slate-700 rounded-md hover:bg-slate-500"><FaEdit size={16}/></button>
-                  <button className="px-4 py-2 whitespace-nowrap text-xs font-medium text-white bg-red-800 rounded-md hover:bg-red-600"><IoTrashBin size={16}/></button>
+                  <button 
+                    onClick={() => handleDeletarReceita(receita.id!)} 
+                    className="px-4 py-2 whitespace-nowrap text-xs font-medium text-white bg-red-800 rounded-md hover:bg-red-600">
+                    <IoTrashBin size={16}/>
+                  </button>
                 </td>
               </tr>
             ))}

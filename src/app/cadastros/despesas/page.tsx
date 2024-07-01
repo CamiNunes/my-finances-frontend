@@ -223,14 +223,14 @@ const Despesas = () => {
         <table className="w-full bg-white border-collapse">
           <thead>
             <tr className="bg-zinc-900">
-              <th className="px-6 py-3 text-left text-md font-medium text-slate-300 uppercase">Descrição</th>
-              <th className="px-6 py-3 text-left text-md font-medium text-slate-300 uppercase">Valor</th>
-              <th className="px-6 py-3 text-left text-md font-medium text-slate-300 uppercase">Data de Vencimento</th>
-              <th className="px-6 py-3 text-left text-md font-medium text-slate-300 uppercase">Data de Pagamento</th>
-              <th className="px-6 py-3 text-left text-md font-medium text-slate-300 uppercase">Categoria</th>
-              <th className="px-6 py-3 text-left text-md font-medium text-slate-300 uppercase">Tipo</th>
-              <th className="px-6 py-3 text-left text-md font-medium text-slate-300 uppercase">Status</th>
-              <th className="px-6 py-3 text-left text-md font-medium text-slate-300 uppercase"></th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Descrição</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Valor</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Data de Vencimento</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Data de Pagamento</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Categoria</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Tipo</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Status</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-700">

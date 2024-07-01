@@ -96,6 +96,17 @@ export const criarReceita = async (novaReceita: ReceitaBackend) => {
   }
 };
 
+export const deletarReceita = async (id: string) => {
+  try {
+    const response = await api.delete(`/api/Receitas/receitas/${id}`);
+    console.log(`Receita com ID ${id} deletada com sucesso.`);
+    return response.data; 
+  } catch (error) {
+    console.error(`Erro ao deletar receita com ID ${id}:`, error);
+    throw error;
+  }
+};
+
 export const listarDespesas = async () => {
   try {
     const response = await api.get('/api/Despesas/listar-despesas');

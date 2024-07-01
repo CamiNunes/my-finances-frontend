@@ -1,4 +1,5 @@
 export interface ReceitaBackend {
+  id: string;
   valor: number;
   dataLancamento: string;
   descricao: string;
