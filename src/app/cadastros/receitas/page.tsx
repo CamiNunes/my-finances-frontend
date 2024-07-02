@@ -40,12 +40,20 @@ const Receitas = () => {
     recebido: true
   });
   const [receitas, setReceitas] = useState<Receita[]>([]);
+  const [filteredReceitas, setFilteredReceitas] = useState<Receita[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mesFiltro, setMesFiltro] = useState<number | null>(null);
+  const [statusFiltro, setStatusFiltro] = useState<string>('');
+  const [descricaoFiltro, setDescricaoFiltro] = useState<string>('');
 
   useEffect(() => {
     fetchCategorias();
     fetchReceitas();
   }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [receitas, mesFiltro, statusFiltro, descricaoFiltro]);
 
   const fetchCategorias = async () => {
     const categoriasData = await listarCategorias();
@@ -57,6 +65,24 @@ const Receitas = () => {
     const receitasData = await listarReceitas();
     setReceitas(receitasData);
     console.log(receitasData);
+  };
+
+  const applyFilters = () => {
+    let filtered = receitas;
+
+    if (mesFiltro !== null) {
+      filtered = filtered.filter(receita => new Date(receita.dataLancamento).getMonth() === mesFiltro);
+    }
+
+    if (statusFiltro) {
+      filtered = filtered.filter(receita => receita.statusReceita.toLowerCase().includes(statusFiltro.toLowerCase()));
+    }
+
+    if (descricaoFiltro) {
+      filtered = filtered.filter(receita => receita.descricao.toLowerCase().includes(descricaoFiltro.toLowerCase()));
+    }
+
+    setFilteredReceitas(filtered);
   };
 
   const mapReceitaToBackend = (receita: Receita): ReceitaBackend => {
@@ -89,7 +115,7 @@ const Receitas = () => {
         timer: 1500
       });
     } catch (error) {
-      console.error('Erro ao deletar Rrceita:', error);
+      console.error('Erro ao deletar Receita:', error);
 
       // Exiba uma mensagem de erro
       Swal.fire({
@@ -129,8 +155,9 @@ const Receitas = () => {
 
       // Exiba uma mensagem de sucesso
       Swal.fire({
-        position: "top-end",
+        position: "center",
         icon: 'success',
+        iconColor: '#0e6716',
         title: 'Receita criada com sucesso!',
         showConfirmButton: false,
         timer: 1500
@@ -140,7 +167,7 @@ const Receitas = () => {
 
       // Exiba uma mensagem de erro
       Swal.fire({
-        position: "top-end",
+        position: "center",
         icon: 'error',
         title: 'Erro ao criar receita',
         text: 'Ocorreu um erro ao criar a receita. Por favor, tente novamente mais tarde.',
@@ -211,6 +238,43 @@ const Receitas = () => {
           </div>
         </div>
       )}
+      <div className="flex gap-4 mt-4">
+        <div>
+          <label htmlFor="mesFiltro" className="block text-sm font-medium text-gray-100">Filtrar por Mês</label>
+          <select 
+            id="mesFiltro" 
+            value={mesFiltro !== null ? mesFiltro : ''} 
+            onChange={(e) => setMesFiltro(e.target.value ? parseInt(e.target.value) : null)} 
+            className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100">
+            <option value="">Todos</option>
+            {["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"].map((mes, index) => (
+              <option key={index} value={index}>{mes}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="statusFiltro" className="block text-sm font-medium text-gray-100">Filtrar por Status</label>
+          <select 
+            id="statusFiltro" 
+            value={statusFiltro} 
+            onChange={(e) => setStatusFiltro(e.target.value)} 
+            className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100">
+            <option value="">Todos</option>
+            <option value="Aberto">Aberto</option>
+            <option value="Recebido">Recebido</option>
+            <option value="Vencido">Vencido</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="descricaoFiltro" className="block text-sm font-medium text-gray-100">Filtrar por Descrição</label>
+          <input 
+            type="text" 
+            id="descricaoFiltro" 
+            value={descricaoFiltro} 
+            onChange={(e) => setDescricaoFiltro(e.target.value)} 
+            className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100" />
+        </div>
+      </div>
       <div className="overflow-x-auto w-full mt-4">
         <table className="w-full bg-white border-collapse">
           <thead>
@@ -226,18 +290,18 @@ const Receitas = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-700">
-            {receitas.map((receita, index) => (
+            {filteredReceitas.map((receita, index) => (
               <tr key={index} className='bg-zinc-800'>
-                <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{receita.descricao}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase">{receita.descricao}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white">
                   {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(receita.valor)}
                 </td>
 
-                <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{receita.dataLancamento ? new Date(receita.dataLancamento).toLocaleDateString() : ''}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{receita.dataRecebimento ? new Date(receita.dataRecebimento).toLocaleDateString() : ''}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{receita.categoria}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{receita.tipoReceita ? 'Casa' : 'Pessoal'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{receita.statusReceita}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white">{receita.dataLancamento ? new Date(receita.dataLancamento).toLocaleDateString() : ''}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white">{receita.dataRecebimento ? new Date(receita.dataRecebimento).toLocaleDateString() : ''}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase">{receita.categoria}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase">{receita.tipoReceita ? 'Casa' : 'Pessoal'}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase">{receita.statusReceita}</td>
                 {/* <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{receita.recebido ? 'Sim' : 'Não'}</td> */}
                 <td>
                   <button className="px-4 py-2 mr-2 whitespace-nowrap text-xs font-medium text-white bg-slate-700 rounded-md hover:bg-slate-500"><FaEdit size={16}/></button>

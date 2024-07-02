@@ -46,7 +46,7 @@ const CategoriaList: React.FC<CategoriaListProps> = ({ categorias }) => {
         <tbody className="divide-y divide-gray-700">
           {categoriasList.map((categoria, index) => (
             <tr key={index} className='bg-zinc-800'>
-              <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{categoria.descricao}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase">{categoria.descricao}</td>
               <td>
               <button className="px-4 py-2 mr-2 whitespace-nowrap text-xs font-medium text-white bg-slate-700 rounded-md hover:bg-slate-500"><FaEdit size={16}/></button>
               <button

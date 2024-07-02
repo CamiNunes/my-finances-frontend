@@ -42,8 +42,9 @@ const Categorias = () => {
 
       // Mostrar SweetAlert de sucesso
       Swal.fire({
-        position: "top-end",
+        position: "center",
         icon: 'success',
+        iconColor: '#0e6716',
         title: 'Categoria criada com sucesso!',
         showConfirmButton: false,
         timer: 1500 // Fecha automaticamente após 1.5 segundos
@@ -53,7 +54,7 @@ const Categorias = () => {
 
       // Mostrar SweetAlert de erro
       Swal.fire({
-        position: "top-end",
+        position: "center",
         icon: 'error',
         title: 'Erro ao criar categoria',
         text: 'Ocorreu um erro ao criar a categoria. Por favor, tente novamente mais tarde.',

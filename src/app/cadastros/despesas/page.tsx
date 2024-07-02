@@ -40,11 +40,20 @@ const Despesas = () => {
   });
   const [despesas, setDespesas] = useState<Despesa[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [filteredDespesas, setFilteredDespesas] = useState<Despesa[]>([]);
+  const [mesPagamentoFiltro, setMesPagamentoFiltro] = useState<number | null>(null);
+  const [mesVencimentoFiltro, setMesVencimentoFiltro] = useState<number | null>(null);
+  const [statusFiltro, setStatusFiltro] = useState<string>('');
+  const [descricaoFiltro, setDescricaoFiltro] = useState<string>('');
 
   useEffect(() => {
     fetchCategorias();
     fetchDespesas();
   }, []);
+
+  useEffect(() => {
+    applyFilters();
+  }, [despesas, mesVencimentoFiltro, statusFiltro, descricaoFiltro]);
 
   const fetchCategorias = async () => {
     const categoriasData = await listarCategorias();
@@ -128,8 +137,9 @@ const Despesas = () => {
 
       // Exiba uma mensagem de sucesso
       Swal.fire({
-        position: "top-end",
+        position: "center",
         icon: 'success',
+        iconColor: '#0e6716',
         title: 'Despesa criada com sucesso!',
         showConfirmButton: false,
         timer: 1500
@@ -139,7 +149,7 @@ const Despesas = () => {
 
       // Exiba uma mensagem de erro
       Swal.fire({
-        position: "top-end",
+        position: "center",
         icon: 'error',
         title: 'Erro ao criar despesa',
         text: 'Ocorreu um erro ao criar a despesa. Por favor, tente novamente mais tarde.',
@@ -150,6 +160,24 @@ const Despesas = () => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+
+  const applyFilters = () => {
+    let filtered = despesas;
+
+    if (mesVencimentoFiltro !== null) {
+      filtered = filtered.filter(despesa => new Date(despesa.dataVencimento).getMonth() === mesVencimentoFiltro);
+    }
+
+    if (statusFiltro) {
+      filtered = filtered.filter(despesa => despesa.statusDespesa.toLowerCase().includes(statusFiltro.toLowerCase()));
+    }
+
+    if (descricaoFiltro) {
+      filtered = filtered.filter(despesa => despesa.descricao.toLowerCase().includes(descricaoFiltro.toLowerCase()));
+    }
+
+    setFilteredDespesas(filtered);
   };
 
   return (
@@ -219,6 +247,43 @@ const Despesas = () => {
           </div>
         </div>
       )}
+      <div className="flex gap-4 mt-4">
+        <div>
+          <label htmlFor="mesFiltro" className="block text-sm font-medium text-gray-100">Filtrar por Mês de Vencimento</label>
+          <select 
+            id="mesFiltro" 
+            value={mesVencimentoFiltro !== null ? mesVencimentoFiltro : ''} 
+            onChange={(e) => setMesVencimentoFiltro(e.target.value ? parseInt(e.target.value) : null)} 
+            className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100">
+            <option value="">Todos</option>
+            {["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"].map((mes, index) => (
+              <option key={index} value={index}>{mes}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="statusFiltro" className="block text-sm font-medium text-gray-100">Filtrar por Status</label>
+          <select 
+            id="statusFiltro" 
+            value={statusFiltro} 
+            onChange={(e) => setStatusFiltro(e.target.value)} 
+            className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100">
+            <option value="">Todos</option>
+            <option value="Aberto">Aberto</option>
+            <option value="Recebido">Pago</option>
+            <option value="Vencido">Vencido</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="descricaoFiltro" className="block text-sm font-medium text-gray-100">Filtrar por Descrição</label>
+          <input 
+            type="text" 
+            id="descricaoFiltro" 
+            value={descricaoFiltro} 
+            onChange={(e) => setDescricaoFiltro(e.target.value)} 
+            className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100" />
+        </div>
+      </div>
       <div className="overflow-x-auto w-full mt-4">
         <table className="w-full bg-white border-collapse">
           <thead>
@@ -234,17 +299,17 @@ const Despesas = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-700">
-            {despesas.map((despesa, index) => (
+            {filteredDespesas.map((despesa, index) => (
               <tr key={index} className='bg-zinc-800'>
-                <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{despesa.descricao}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase">{despesa.descricao}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white">
                   {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valor)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{despesa.dataVencimento ? new Date(despesa.dataVencimento).toLocaleDateString() : ''}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{despesa.dataPagamento ? new Date(despesa.dataPagamento).toLocaleDateString() : ''}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{despesa.categoria}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{despesa.tipoDespesa ? 'Casa' : 'Pessoal'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-md font-medium text-white">{despesa.statusDespesa}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white">{despesa.dataVencimento ? new Date(despesa.dataVencimento).toLocaleDateString() : ''}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white">{despesa.dataPagamento ? new Date(despesa.dataPagamento).toLocaleDateString() : ''}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase">{despesa.categoria}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase">{despesa.tipoDespesa ? 'Casa' : 'Pessoal'}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase">{despesa.statusDespesa}</td>
                 <td>
                   <button className="px-4 py-2 mr-2 whitespace-nowrap text-xs font-medium text-white bg-slate-700 rounded-md hover:bg-slate-500"><FaEdit size={16}/></button>
                   <button 
