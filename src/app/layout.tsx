@@ -30,6 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <title>Finanças Pessoais</title>
         <meta name="description" content="Gerenciamento de finanças pessoais" />
+        <link rel="icon" href="/favicon.ico" />
       </head>
       <body className="flex h-screen text-foreground bg-background">
         {!isLoginPage && <Sidebar isOpen={isSidebarOpen} />}

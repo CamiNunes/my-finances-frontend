@@ -2,6 +2,8 @@ import { FC } from 'react';
 import Link from 'next/link';
 import { FiHome, FiTrendingUp, FiDollarSign } from 'react-icons/fi';
 import { TbCategoryPlus } from "react-icons/tb";
+import { MdOutlineAddCard } from "react-icons/md";
+import { AiFillBank } from "react-icons/ai";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -20,6 +22,16 @@ const Sidebar: FC<SidebarProps> = ({ isOpen }) => {
         <li className="p-4 hover:bg-gray-700">
           <Link href="/cadastros/categorias" className="flex items-center">
             <TbCategoryPlus className="mr-2" />Categorias
+          </Link>
+        </li>
+        <li className="p-4 hover:bg-gray-700">
+          <Link href="/cadastros/cartao-de-credito" className="flex items-center">
+            <MdOutlineAddCard className="mr-2" />Cartão de Crédito
+          </Link>
+        </li>
+        <li className="p-4 hover:bg-gray-700">
+          <Link href="/cadastros/contas-banco" className="flex items-center">
+            <AiFillBank className="mr-2" />Contas Banco
           </Link>
         </li>
         <li className="p-4 hover:bg-gray-700">

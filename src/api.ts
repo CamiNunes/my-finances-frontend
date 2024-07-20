@@ -138,3 +138,53 @@ export const deletarDespesa = async (id: string) => {
     throw error;
   }
 };
+
+export const DespesasDoMes = async (mes: number) => {
+  try {
+    const response = await api.get(`/api/Dashboard/soma-despesas-mes?mes=${mes}`);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar despesas:', error);
+    return 0; // Retorna 0 em caso de erro para manter a consistência do tipo
+  }
+};
+
+export const DespesasEmAbertoDoMes = async (mes: number) => {
+  try {
+    const response = await api.get(`/api/Dashboard/soma-despesas-em-aberto-mes?mes=${mes}`);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar despesas:', error);
+    return 0; // Retorna 0 em caso de erro para manter a consistência do tipo
+  }
+};
+
+export const ReceitasDoMes = async (mes: number) => {
+  try {
+    const response = await api.get(`/api/Dashboard/soma-receitas-mes?mes=${mes}`);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar despesas:', error);
+    return 0; // Retorna 0 em caso de erro para manter a consistência do tipo
+  }
+};
+
+export const DespesasAVencerNoMes = async (mes: number) => {
+  try {
+    const response = await api.get(`/api/Dashboard/despesas-a-vencer-mes?mes=${mes}`);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar despesas:', error);
+    return 0; // Retorna 0 em caso de erro para manter a consistência do tipo
+  }
+};
+
+export const SaldoDoMes = async (mes: number) => {
+  try {
+    const response = await api.get(`/api/Dashboard/saldo-mes?mes=${mes}`);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar despesas:', error);
+    return 0; // Retorna 0 em caso de erro para manter a consistência do tipo
+  }
+};
