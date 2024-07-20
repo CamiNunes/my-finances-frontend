@@ -188,3 +188,13 @@ export const SaldoDoMes = async (mes: number) => {
     return 0; // Retorna 0 em caso de erro para manter a consistência do tipo
   }
 };
+
+export const ListarDespesasAbertasDoMes = async (mes: number) => {
+  try {
+    const response = await api.get(`/api/Dashboard/listar-despesas-abertas-mes?mes=${mes}`);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar despesas:', error);
+    return 0; // Retorna 0 em caso de erro para manter a consistência do tipo
+  }
+};
