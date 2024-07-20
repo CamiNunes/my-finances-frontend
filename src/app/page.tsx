@@ -14,7 +14,8 @@ interface Despesa {
 }
 
 const Home: React.FC = () => {
-  const [mesFiltro, setMesFiltro] = useState<number | null>(null);
+  // Inicialize mesFiltro com o mês atual
+  const [mesFiltro, setMesFiltro] = useState<number>(new Date().getMonth() + 1);
   const [despesasMes, setDespesasMes] = useState<number>(0);
   const [despesasEmAbertoMes, setDespesasEmAbertoMes] = useState<number>(0);
   const [receitasMes, setReceitasMes] = useState<number>(0);
