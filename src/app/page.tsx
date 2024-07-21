@@ -14,7 +14,6 @@ interface Despesa {
 }
 
 const Home: React.FC = () => {
-  // Inicialize mesFiltro com o mês atual
   const [mesFiltro, setMesFiltro] = useState<number>(new Date().getMonth() + 1);
   const [despesasMes, setDespesasMes] = useState<number>(0);
   const [despesasEmAbertoMes, setDespesasEmAbertoMes] = useState<number>(0);
@@ -24,9 +23,8 @@ const Home: React.FC = () => {
   const [listaDespesasEmAberto, setListaDespesasEmAberto] = useState<Despesa[]>([]);
   const emailUsuario = "cvn.camila@gmail.com"; // Substitua pelo email do usuário autenticado
 
-  // Função para lidar com a mudança no filtro de mês
   const handleChangeMesFiltro = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedMonth = event.target.value !== '' ? parseInt(event.target.value) : null;
+    const selectedMonth = event.target.value !== '' ? parseInt(event.target.value) : 0;
     setMesFiltro(selectedMonth);
   };
 
@@ -52,9 +50,28 @@ const Home: React.FC = () => {
     fetchData();
   }, [mesFiltro, emailUsuario]);
 
+  const getStatus = (dataVencimento: string) => {
+    const dataVenc = new Date(dataVencimento);
+    const dataAtual = new Date();
+    if (dataVenc < dataAtual) {
+      return "VENCIDO";
+    } else {
+      return "EM ABERTO";
+    }
+  };
+
+  const getRowStyle = (dataVencimento: string) => {
+    const dataVenc = new Date(dataVencimento);
+    const dataAtual = new Date();
+    if (dataVenc < dataAtual) {
+      return "bg-red-100 text-red-600 font-bold";
+    } else {
+      return "bg-yellow-100 text-yellow-800 font-bold";
+    } 
+  };
+
   return (
     <div className="p-4">
-      {/* Filtro por mês */}
       <div className="mb-4">
         <label htmlFor="mesFiltro" className="text-white block mb-2">Filtrar por mês:</label>
         <select 
@@ -69,40 +86,25 @@ const Home: React.FC = () => {
         </select>
       </div>
 
-      {/* Quadros de Resumo */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        {/* Quadro de Despesas do Mês */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-gray-200 py-10 px-6 rounded-lg">
           <h2 className="flex gap-4 text-lg font-bold text-slate-950 mb-2"><FaRegArrowAltCircleDown size={30}/>Despesas Pagas do Mês</h2>
           <p className="text-slate-950">Valor Total: R$ {despesasMes.toFixed(2)}</p>
         </div>
-        
-        {/* Quadro de Despesas Em Aberto do Mês */}
         <div className="bg-gray-200 py-10 px-6 rounded-lg">
           <h2 className="flex gap-4 text-lg font-bold text-slate-950 mb-2"><FaRegArrowAltCircleDown size={30}/>Despesas Em Aberto do Mês</h2>
           <p className="text-slate-950">Valor Total: R$ {despesasEmAbertoMes.toFixed(2)}</p>
         </div>
-
-        {/* Quadro de Despesas Próximas a Vencer */}
-        <div className="bg-gray-200 py-10 px-6 rounded-lg">
-          <h2 className="flex gap-4 text-lg font-bold text-slate-950 mb-2"><TbCalendarDown size={30}/>Despesas Próximas a Vencer</h2>
-          <p className="text-slate-950">Quantidade: {despesasProximasVencimento} despesas</p>
-        </div>
-
-        {/* Quadro de Receitas do Mês */}
         <div className="bg-gray-200 py-10 px-6 rounded-lg">
           <h2 className="flex gap-4 text-lg font-bold text-slate-950 mb-2"><FaRegArrowAltCircleUp size={30}/>Receitas do Mês</h2>
           <p className="text-slate-950">Valor Total: R$ {receitasMes.toFixed(2)}</p>
         </div>
-
-        {/* Quadro de Diferença entre Receitas e Despesas */}
         <div className="bg-gray-200 py-10 px-6 rounded-lg">
           <h2 className="flex gap-4 text-lg font-bold text-slate-950 mb-2"><GiWallet  size={30}/>Saldo</h2>
           <p className="text-slate-950">Diferença: R$ {diferenca.toFixed(2)}</p>
         </div>
       </div>
 
-      {/* Tabela de Despesas Em Aberto */}
       <div className="mt-8">
         <h2 className="text-lg font-bold text-white mb-4">Despesas Em Aberto no Mês</h2>
         <div className="overflow-x-auto">
@@ -112,14 +114,16 @@ const Home: React.FC = () => {
                 <th className="py-2 px-4 text-left text-slate-950">Descrição</th>
                 <th className="py-2 px-4 text-center text-slate-950">Valor</th>
                 <th className="py-2 px-4 text-center text-slate-950">Data de Vencimento</th>
+                <th className="py-2 px-4 text-center text-slate-950">Status</th>
               </tr>
             </thead>
             <tbody>
               {listaDespesasEmAberto.map((despesa, index) => (
-                <tr key={index} className="bg-gray-100 border-b border-gray-300">
+                <tr key={index} className={`bg-gray-100 border-b border-gray-300 ${getRowStyle(despesa.dataVencimento)}`}>
                   <td className="py-2 px-4 text-slate-950">{despesa.descricao}</td>
                   <td className="py-2 px-4 text-slate-950 text-center">R$ {despesa.valor.toFixed(2)}</td>
                   <td className="py-2 px-4 text-slate-950 text-center">{new Date(despesa.dataVencimento).toLocaleDateString('pt-BR')}</td>
+                  <td className="py-2 px-4 text-center">{getStatus(despesa.dataVencimento)}</td>
                 </tr>
               ))}
             </tbody>
