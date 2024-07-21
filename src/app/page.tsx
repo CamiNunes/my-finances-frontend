@@ -114,7 +114,7 @@ const Home: React.FC = () => {
             <thead>
               <tr className="w-full bg-gray-300">
                 <th className="py-2 px-4 text-left text-slate-950">Descrição</th>
-                <th className="py-2 px-4 text-center text-slate-950">Valor</th>
+                <th className="py-2 px-4 text-right text-slate-950">Valor</th>
                 <th className="py-2 px-4 text-center text-slate-950">Data de Vencimento</th>
                 <th className="py-2 px-4 text-center text-slate-950">Situação</th>
               </tr>
@@ -123,7 +123,7 @@ const Home: React.FC = () => {
               {listaDespesasEmAberto.map((despesa, index) => (
                 <tr key={index} className={`bg-gray-100 border-b border-gray-300 ${getRowStyle(despesa.dataVencimento)}`}>
                   <td className="py-2 px-4 text-slate-950">{despesa.descricao}</td>
-                  <td className="py-2 px-4 text-slate-950 text-center">R$ {despesa.valor.toFixed(2)}</td>
+                  <td className="py-2 px-4 text-slate-950 text-right">R$ {despesa.valor.toFixed(2)}</td>
                   <td className="py-2 px-4 text-slate-950 text-center">{new Date(despesa.dataVencimento).toLocaleDateString('pt-BR')}</td>
                   <td className="py-2 px-4 text-center">{getStatus(despesa.dataVencimento)}</td>
                 </tr>

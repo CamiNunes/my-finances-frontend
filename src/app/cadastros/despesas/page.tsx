@@ -290,8 +290,8 @@ const Despesas = () => {
             <tr className="bg-zinc-900">
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Descrição</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Valor</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Data de Vencimento</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Data de Pagamento</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-slate-300 uppercase">Data de Vencimento</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-slate-300 uppercase">Data de Pagamento</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Categoria</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Tipo</th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Status</th>
@@ -302,11 +302,11 @@ const Despesas = () => {
             {filteredDespesas.map((despesa, index) => (
               <tr key={index} className='bg-zinc-800'>
                 <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase">{despesa.descricao}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white">
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white text-right">
                   {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(despesa.valor)}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white">{despesa.dataVencimento ? new Date(despesa.dataVencimento).toLocaleDateString() : ''}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white">{despesa.dataPagamento ? new Date(despesa.dataPagamento).toLocaleDateString() : ''}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white text-center">{despesa.dataVencimento ? new Date(despesa.dataVencimento).toLocaleDateString() : ''}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white text-center">{despesa.dataPagamento ? new Date(despesa.dataPagamento).toLocaleDateString() : ''}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase">{despesa.categoria}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase">{despesa.tipoDespesa ? 'Casa' : 'Pessoal'}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase">{despesa.statusDespesa}</td>
