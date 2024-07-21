@@ -50,24 +50,26 @@ const Home: React.FC = () => {
     fetchData();
   }, [mesFiltro, emailUsuario]);
 
-  const getStatus = (dataVencimento: string) => {
-    const dataVenc = new Date(dataVencimento);
-    const dataAtual = new Date();
-    if (dataVenc < dataAtual) {
-      return "VENCIDO";
+  const getRowStyle = (dataVencimento: string) => {
+    const vencimento = new Date(dataVencimento);
+    const hoje = new Date();
+  
+    if (vencimento < hoje) {
+      return 'bg-red-100 text-red-600 font-semibold'; // Linha vermelha para vencido
     } else {
-      return "EM ABERTO";
+      return 'bg-yellow-100 text-yellow-600 font-semibold'; // Linha amarela para em aberto
     }
   };
-
-  const getRowStyle = (dataVencimento: string) => {
-    const dataVenc = new Date(dataVencimento);
-    const dataAtual = new Date();
-    if (dataVenc < dataAtual) {
-      return "bg-red-100 text-red-600 font-bold";
+  
+  const getStatus = (dataVencimento: string) => {
+    const vencimento = new Date(dataVencimento);
+    const hoje = new Date();
+  
+    if (vencimento < hoje) {
+      return 'VENCIDO';
     } else {
-      return "bg-yellow-100 text-yellow-800 font-bold";
-    } 
+      return 'EM ABERTO';
+    }
   };
 
   return (
@@ -114,7 +116,7 @@ const Home: React.FC = () => {
                 <th className="py-2 px-4 text-left text-slate-950">Descrição</th>
                 <th className="py-2 px-4 text-center text-slate-950">Valor</th>
                 <th className="py-2 px-4 text-center text-slate-950">Data de Vencimento</th>
-                <th className="py-2 px-4 text-center text-slate-950">Status</th>
+                <th className="py-2 px-4 text-center text-slate-950">Situação</th>
               </tr>
             </thead>
             <tbody>
