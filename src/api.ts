@@ -30,6 +30,14 @@ interface Receita {
   recebido: 'Sim' | 'Não';
 }
 
+interface ListarDespesasParams {
+  pageNumber: number;
+  pageSize: number;
+  mes?: number | null;
+  status?: string | null;
+  descricao?: string | null;
+}
+
 export const login = async (email: string, password: string) => {
   try {
     const response = await api.post('/api/Auth/login', { email, password });
@@ -107,13 +115,36 @@ export const deletarReceita = async (id: string) => {
   }
 };
 
-export const listarDespesas = async () => {
+export const listarDespesas = async (
+  pageNumber = 1,
+  pageSize = 10,
+  mes: number | null = null,
+  status: string | null = null,
+  descricao: string | null = null
+) => {
   try {
-    const response = await api.get('/api/Despesas/listar-despesas');
-    return response.data;
+    const params: ListarDespesasParams = {
+      pageNumber,
+      pageSize,
+    };
+
+    if (mes !== null) {
+      params.mes = mes;
+    }
+
+    if (status !== null) {
+      params.status = status;
+    }
+
+    if (descricao !== null) {
+      params.descricao = descricao;
+    }
+
+    const response = await api.get('/api/Despesas/listar-despesas', { params });
+    return response.data.items;
   } catch (error) {
     console.error('Erro ao buscar despesas:', error);
-    return [];
+    return { items: [], totalCount: 0, pageNumber, pageSize }; // Estrutura padrão de dados
   }
 };
 
