@@ -3,7 +3,8 @@ import axios from 'axios';
 import { DespesaBackend, ReceitaBackend } from './interfaces/interfaces';
 
 const api = axios.create({
-  baseURL: 'https://localhost:7192',
+  //baseURL: 'https://localhost:7192',
+  baseURL: 'http://camilanunes-001-site2.ctempurl.com/',
 });
 
 // Interceptor para adicionar o token a cada requisição
