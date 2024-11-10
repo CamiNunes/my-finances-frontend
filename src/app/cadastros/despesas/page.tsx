@@ -311,32 +311,32 @@ const Despesas = () => {
         </div>
       </div>  
       <div className="overflow-x-auto w-full mt-4">
-        <table className="min-w-full bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100">
+        <table className="w-full bg-white border-collapse">
           <thead>
-            <tr>
-              <th className="py-2 px-4 border-b text-left">Descrição</th>
-              <th className="py-2 px-4 border-b text-right">Valor</th>
-              <th className="py-2 px-4 border-b text-center">Data de Vencimento</th>
-              <th className="py-2 px-4 border-b text-center">Categoria</th>
-              <th className="py-2 px-4 border-b text-center">Status</th>
-              <th className="py-2 px-4 border-b text-center">Tipo</th>
-              <th className="py-2 px-4 border-b text-center">Ações</th>
+            <tr className="bg-zinc-900">
+              <th className="px-6 py-3 text-left text-xs font-medium text-slate-300 uppercase">Descrição</th>
+              <th className="px-6 py-3 text-right text-xs font-medium text-slate-300 uppercase">Valor</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-slate-300 uppercase">Data de Vencimento</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-slate-300 uppercase">Categoria</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-slate-300 uppercase">Status</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-slate-300 uppercase">Tipo</th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-slate-300 uppercase">Ações</th>
             </tr>
           </thead>
           <tbody>
             {filteredDespesas.map((despesa) => (
-              <tr key={despesa.id}>
-                <td className="py-2 px-4 border-b">{despesa.descricao}</td>
-                <td className="py-2 px-4 border-b text-right">R$ {despesa.valor.toFixed(2)}</td>
-                <td className="py-2 px-4 border-b text-center">
+              <tr key={despesa.id} className='bg-zinc-800'>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase">{despesa.descricao}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white text-right">R$ {despesa.valor.toFixed(2)}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white text-center">
                 {despesa.dataVencimento ? new Date(despesa.dataVencimento).toLocaleDateString('pt-BR') : 'Data inválida'}
                 </td>
-                <td className="py-2 px-4 border-b text-center">{despesa.categoria}</td>
-                <td className="py-2 px-4 border-b text-center">{despesa.statusDespesa}</td>
-                <td className="py-2 px-4 border-b text-center">{despesa.tipoDespesa ? 'Casa' : 'Pessoal'}</td>
-                <td className="py-2 px-4 border-b text-center">
-                  <button onClick={() => handleDeletarDespesa(despesa.id)} className="text-red-500 hover:text-red-700"><IoTrashBin /></button>
-                  <button onClick={() => console.log('Edit feature not implemented yet')} className="text-blue-500 hover:text-blue-700 ml-4"><FaEdit /></button>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase text-center">{despesa.categoria}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase text-center">{despesa.statusDespesa}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase text-center">{despesa.tipoDespesa ? 'Casa' : 'Pessoal'}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-xs font-medium text-white uppercase text-center">
+                  <button onClick={() => console.log('Edit feature not implemented yet')} className="px-4 py-2 mr-2 whitespace-nowrap text-xs font-medium text-white bg-slate-700 rounded-md hover:bg-slate-500"><FaEdit /></button>
+                  <button onClick={() => handleDeletarDespesa(despesa.id)} className="px-4 py-2 whitespace-nowrap text-xs font-medium text-white bg-red-800 rounded-md hover:bg-red-600"><IoTrashBin /></button>
                 </td>
               </tr>
             ))}
