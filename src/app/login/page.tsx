@@ -13,26 +13,36 @@ const LoginPage = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     try {
-      const { token, userName } = await login(email, password);
-
-      localStorage.setItem('token', token);
-      localStorage.setItem('userName', userName);
-
-      router.push('/');
+      const response = await login(email, password);
+  
+      // Supondo que a função login retorna { token, userName }
+      const { token, userName } = response;
+  
+      if (token) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('userName', userName);
+  
+        // Redireciona para a página principal
+        router.push('/'); // Alterar para a rota desejada
+      } else {
+        // Token não recebido, exiba mensagem de erro
+        setError('Erro inesperado. Tente novamente.');
+      }
     } catch (error) {
+      // Se a API retornar um erro, exiba a mensagem apropriada
       setError('Usuário ou senha inválidos.');
     }
   };
-
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
         <h2 className="mb-6 text-3xl font-bold text-center text-black">Bem-vindo de volta!</h2>
         <p className="mb-6 text-center text-gray-600">Faça login para acessar sua conta.</p>
         <form onSubmit={handleLogin}>
-          <div className="mb-4">
+          <div className="mb-2">
             <label className="block mb-2 text-sm font-bold text-black">Email</label>
             <input
               type="text"

@@ -42,14 +42,30 @@ interface ListarDespesasParams {
 export const login = async (email: string, password: string) => {
   try {
     const response = await api.post('/api/Auth/login', { email, password });
-    const { token, userName } = response.data;
-    
+
+    // Verifica se o token e o userName foram retornados
+    const { token, userName } = response.data || {};
+    if (!token || !userName) {
+      throw new Error('Resposta inválida do servidor.');
+    }
+
+    // Armazena os dados no localStorage
     localStorage.setItem('token', token);
     localStorage.setItem('userName', userName);
 
     return { token, userName };
-  } catch (error) {
-    throw error;
+  } catch (error: any) {
+    // Trata erros de forma mais detalhada
+    if (error.response) {
+      // Erro de resposta do backend (e.g., 401, 500)
+      throw new Error(error.response.data.message || 'Falha na autenticação. Verifique suas credenciais.');
+    } else if (error.request) {
+      // Erro de rede (e.g., sem resposta do servidor)
+      throw new Error('Não foi possível conectar ao servidor. Verifique sua conexão.');
+    } else {
+      // Outros erros
+      throw new Error(error.message || 'Ocorreu um erro inesperado.');
+    }
   }
 };
 
