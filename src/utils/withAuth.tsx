@@ -1,19 +1,30 @@
-"use client"
-
 // src/utils/withAuth.tsx
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Use 'next/navigation'
+"use client";
 
-const withAuth = (WrappedComponent: any) => {
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { jwtDecode } from "jwt-decode";
+
+// Função para validar o token
+const validateToken = (token: string): boolean => {
+  try {
+    const decoded = jwtDecode<{ exp: number }>(token);
+    return decoded.exp * 1000 > Date.now(); // Verifica se o token não está expirado
+  } catch (error) {
+    return false;
+  }
+};
+
+// Higher-Order Component para autenticação
+const withAuth = (WrappedComponent: React.ComponentType) => {
   const AuthComponent = (props: any) => {
     const router = useRouter();
 
     useEffect(() => {
-      if (typeof window !== 'undefined') { // Certifique-se de que está no cliente
-        const token = localStorage.getItem('token');
-        if (!token) {
-          router.push('/login');
-        }
+      const token = localStorage.getItem("token");
+
+      if (!token || !validateToken(token)) {
+        router.push("/login"); // Redireciona para a página de login
       }
     }, [router]);
 
@@ -25,8 +36,9 @@ const withAuth = (WrappedComponent: any) => {
   return AuthComponent;
 };
 
+// Helper para pegar o nome do componente
 const getDisplayName = (WrappedComponent: any) => {
-  return WrappedComponent.displayName || WrappedComponent.name || 'Component';
+  return WrappedComponent.displayName || WrappedComponent.name || "Component";
 };
 
 export default withAuth;
