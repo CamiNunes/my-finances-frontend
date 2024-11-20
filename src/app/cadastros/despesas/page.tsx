@@ -209,68 +209,118 @@ const Despesas = () => {
     <div className="flex flex-col items-center w-full">
       <button onClick={() => setIsModalOpen(true)} className="bg-green-800 text-white px-4 py-2 mt-4 rounded-md w-full">Adicionar Despesa</button>
       {isModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
-        <div className="bg-zinc-800 p-4 rounded-lg w-full max-w-lg">
-          <form onSubmit={handleSaveDespesa} className="w-full">
-            <label htmlFor="descricao" className="block text-sm font-medium text-gray-100">Descrição</label>
-            <input type="text" id="descricao" value={despesa.descricao} onChange={(e) => setDespesa({ ...despesa, descricao: e.target.value })} className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100" />
-            
-            <label htmlFor="valor" className="block text-sm font-medium text-gray-100">Valor</label>
-            <input type="number" id="valor" value={despesa.valor} onChange={(e) => setDespesa({ ...despesa, valor: parseFloat(e.target.value) })} className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100" />
-            
-            <label htmlFor="dataVencimento" className="block text-sm font-medium text-gray-100">Data de Vencimento</label>
-            <input type="date" id="dataVencimento" value={despesa.dataVencimento.toISOString().substr(0, 10)} onChange={(e) => setDespesa({ ...despesa, dataVencimento: new Date(e.target.value) })} className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100" />
-            
-            <label htmlFor="dataPagamento" className="block text-sm font-medium text-gray-100">Data de Pagamento</label>
-            <input
-              type="date"
-              id="dataPagamento"
-              value={despesa.dataPagamento ? despesa.dataPagamento.toISOString().substr(0, 10) : ''}
-              onChange={(e) => {
-                const newValue = e.target.value ? new Date(e.target.value) : null;
-                setDespesa({ ...despesa, dataPagamento: newValue });
-              }}
-              className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100"
-            />
-            
-            <label htmlFor="categoria" className="block text-sm font-medium text-gray-100">Categoria</label>
-            <select 
-              id="categoria" 
-              value={despesa.categoria} 
-              onChange={(e) => setDespesa({ ...despesa, categoria: e.target.value })} 
-              className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100">
-              {categorias.map((categoria, index) => (
-                <option key={index} value={categoria.descricao}>{categoria.descricao}</option>
-              ))}
-            </select>
-            
-            <label htmlFor="tipo" className="block text-sm font-medium text-gray-100">Tipo</label>
-            <select 
-              id="tipo" 
-              value={despesa.tipoDespesa} 
-              onChange={(e) => setDespesa({ ...despesa, tipoDespesa: e.target.value as 'Casa' | 'Pessoal' })} 
-              className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100">
-              <option value="Casa">Casa</option>
-              <option value="Pessoal">Pessoal</option>
-            </select>
-            
-            <label htmlFor="recebido" className="block text-sm font-medium text-gray-100">Pago</label>
-            <select 
-              id="recebido" 
-              value={despesa.pago ? 'Sim' : 'Não'} 
-              onChange={(e) => setDespesa({ ...despesa, pago: e.target.value === 'Sim' })} 
-              className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100">
-              <option value="Sim">Sim</option>
-              <option value="Não">Não</option>
-            </select>
-            
-            <div className="flex justify-end mt-4">
-              <button type="button" onClick={handleCancel} className="flex gap-2 bg-gray-700 text-white px-4 py-2 mr-2 rounded-md"><TiCancel size={24}/> Cancelar</button>
-              <button type="submit" className="flex gap-2 bg-green-800 text-white px-4 py-2 rounded-md"><HiSave size={24}/> Salvar</button>
+      <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
+        <div className="bg-zinc-800 p-6 rounded-lg w-full max-w-4xl">
+          <form onSubmit={handleSaveDespesa} className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Descrição */}
+            <div className="col-span-1 md:col-span-2">
+              <label htmlFor="descricao" className="block text-sm font-medium text-gray-100">Descrição</label>
+              <input 
+                type="text" 
+                id="descricao" 
+                value={despesa.descricao} 
+                onChange={(e) => setDespesa({ ...despesa, descricao: e.target.value })} 
+                className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100" 
+              />
+            </div>
+      
+            {/* Valor */}
+            <div>
+              <label htmlFor="valor" className="block text-sm font-medium text-gray-100">Valor</label>
+              <input 
+                type="number" 
+                id="valor" 
+                value={despesa.valor} 
+                onChange={(e) => setDespesa({ ...despesa, valor: parseFloat(e.target.value) })} 
+                className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100" 
+              />
+            </div>
+      
+            {/* Data de Vencimento */}
+            <div>
+              <label htmlFor="dataVencimento" className="block text-sm font-medium text-gray-100">Data de Vencimento</label>
+              <input 
+                type="date" 
+                id="dataVencimento" 
+                value={despesa.dataVencimento.toISOString().substr(0, 10)} 
+                onChange={(e) => setDespesa({ ...despesa, dataVencimento: new Date(e.target.value) })} 
+                className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100" 
+              />
+            </div>
+      
+            {/* Data de Pagamento */}
+            <div>
+              <label htmlFor="dataPagamento" className="block text-sm font-medium text-gray-100">Data de Pagamento</label>
+              <input 
+                type="date" 
+                id="dataPagamento" 
+                value={despesa.dataPagamento ? despesa.dataPagamento.toISOString().substr(0, 10) : ''} 
+                onChange={(e) => {
+                  const newValue = e.target.value ? new Date(e.target.value) : null;
+                  setDespesa({ ...despesa, dataPagamento: newValue });
+                }}
+                className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100" 
+              />
+            </div>
+      
+            {/* Categoria */}
+            <div>
+              <label htmlFor="categoria" className="block text-sm font-medium text-gray-100">Categoria</label>
+              <select 
+                id="categoria" 
+                value={despesa.categoria} 
+                onChange={(e) => setDespesa({ ...despesa, categoria: e.target.value })} 
+                className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100">
+                {categorias.map((categoria, index) => (
+                  <option key={index} value={categoria.descricao}>{categoria.descricao}</option>
+                ))}
+              </select>
+            </div>
+      
+            {/* Tipo */}
+            <div>
+              <label htmlFor="tipo" className="block text-sm font-medium text-gray-100">Tipo</label>
+              <select 
+                id="tipo" 
+                value={despesa.tipoDespesa} 
+                onChange={(e) => setDespesa({ ...despesa, tipoDespesa: e.target.value as 'Casa' | 'Pessoal' })} 
+                className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100">
+                <option value="Casa">Casa</option>
+                <option value="Pessoal">Pessoal</option>
+              </select>
+            </div>
+      
+            {/* Pago */}
+            <div>
+              <label htmlFor="recebido" className="block text-sm font-medium text-gray-100">Pago</label>
+              <select 
+                id="recebido" 
+                value={despesa.pago ? 'Sim' : 'Não'} 
+                onChange={(e) => setDespesa({ ...despesa, pago: e.target.value === 'Sim' })} 
+                className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100">
+                <option value="Sim">Sim</option>
+                <option value="Não">Não</option>
+              </select>
+            </div>
+      
+            {/* Botões */}
+            <div className="col-span-1 md:col-span-2 flex justify-end gap-2">
+              <button 
+                type="button" 
+                onClick={handleCancel} 
+                className="flex gap-2 bg-gray-700 text-white px-4 py-2 rounded-md">
+                <TiCancel size={24} /> Cancelar
+              </button>
+              <button 
+                type="submit" 
+                className="flex gap-2 bg-green-800 text-white px-4 py-2 rounded-md">
+                <HiSave size={24} /> Salvar
+              </button>
             </div>
           </form>
         </div>
       </div>
+    
       )}
 
       <div className="flex gap-4 mt-4 mb-4">

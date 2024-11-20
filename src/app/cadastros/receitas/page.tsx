@@ -184,59 +184,122 @@ const Receitas = () => {
     <div className="flex flex-col items-center w-full">
       <button onClick={() => setIsModalOpen(true)} className="bg-green-800 text-white px-4 py-2 mt-4 rounded-md w-full">Adicionar Receita</button>
       {isModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-zinc-800 p-4 rounded-lg w-full max-w-lg">
-            <form onSubmit={handleSaveReceita} className="w-full">
-              <label htmlFor="descricao" className="block text-sm font-medium text-gray-100">Descrição</label>
-              <input type="text" id="descricao" value={receita.descricao} onChange={(e) => setReceita({ ...receita, descricao: e.target.value })} className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100" />
-              
-              <label htmlFor="valor" className="block text-sm font-medium text-gray-100">Valor</label>
-              <input type="number" id="valor" value={receita.valor} onChange={(e) => setReceita({ ...receita, valor: parseFloat(e.target.value) })} className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100" />
-              
-              <label htmlFor="dataLancamento" className="block text-sm font-medium text-gray-100">Data de Lançamento</label>
-              <input type="date" id="dataLancamento" value={receita.dataLancamento.toISOString().substr(0, 10)} onChange={(e) => setReceita({ ...receita, dataLancamento: new Date(e.target.value) })} className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100" />
-              
-              <label htmlFor="dataRecebimento" className="block text-sm font-medium text-gray-100">Data de Recebimento</label>
-              <input type="date" id="dataRecebimento" value={receita.dataRecebimento.toISOString().substr(0, 10)} onChange={(e) => setReceita({ ...receita, dataRecebimento: new Date(e.target.value) })} className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100" />
-              
-              <label htmlFor="categoria" className="block text-sm font-medium text-gray-100">Categoria</label>
-              <select 
-                id="categoria" 
-                value={receita.categoria} 
-                onChange={(e) => setReceita({ ...receita, categoria: e.target.value })} 
-                className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100">
-                {categorias.map((categoria, index) => (
-                  <option key={index} value={categoria.descricao}>{categoria.descricao}</option>
-                ))}
-              </select>
-              
-              <label htmlFor="tipo" className="block text-sm font-medium text-gray-100">Tipo</label>
-              <select 
-                id="tipo" 
-                value={receita.tipoReceita} 
-                onChange={(e) => setReceita({ ...receita, tipoReceita: e.target.value as 'Casa' | 'Pessoal' })} 
-                className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100">
-                <option value="Casa">Casa</option>
-                <option value="Pessoal">Pessoal</option>
-              </select>
-              
-              <label htmlFor="recebido" className="block text-sm font-medium text-gray-100">Recebido</label>
-              <select 
-                id="recebido" 
-                value={receita.recebido ? 'Sim' : 'Não'} 
-                onChange={(e) => setReceita({ ...receita, recebido: e.target.value === 'Sim' })} 
-                className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100">
-                <option value="Sim">Sim</option>
-                <option value="Não">Não</option>
-              </select>
-              
-              <div className="flex justify-end mt-4">
-                <button type="button" onClick={handleCancel} className="flex gap-2 bg-gray-700 text-white px-4 py-2 mr-2 rounded-md"><TiCancel size={24}/> Cancelar</button>
-                <button type="submit" className="flex gap-2 bg-green-800 text-white px-4 py-2 rounded-md"><HiSave size={24}/> Salvar</button>
+      <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">
+        <div className="bg-zinc-800 p-6 rounded-lg w-full max-w-4xl">
+          <form onSubmit={handleSaveReceita} className="w-full space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Descrição */}
+              <div className="col-span-1 md:col-span-2">
+                <label htmlFor="descricao" className="block text-sm font-medium text-gray-100">Descrição</label>
+                <input
+                  type="text"
+                  id="descricao"
+                  value={receita.descricao}
+                  onChange={(e) => setReceita({ ...receita, descricao: e.target.value })}
+                  className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100"
+                />
               </div>
-            </form>
-          </div>
+      
+              {/* Valor */}
+              <div>
+                <label htmlFor="valor" className="block text-sm font-medium text-gray-100">Valor</label>
+                <input
+                  type="number"
+                  id="valor"
+                  value={receita.valor}
+                  onChange={(e) => setReceita({ ...receita, valor: parseFloat(e.target.value) })}
+                  className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100"
+                />
+              </div>
+      
+              {/* Data de Lançamento */}
+              <div>
+                <label htmlFor="dataLancamento" className="block text-sm font-medium text-gray-100">Data de Lançamento</label>
+                <input
+                  type="date"
+                  id="dataLancamento"
+                  value={receita.dataLancamento.toISOString().substr(0, 10)}
+                  onChange={(e) => setReceita({ ...receita, dataLancamento: new Date(e.target.value) })}
+                  className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100"
+                />
+              </div>
+      
+              {/* Data de Recebimento */}
+              <div>
+                <label htmlFor="dataRecebimento" className="block text-sm font-medium text-gray-100">Data de Recebimento</label>
+                <input
+                  type="date"
+                  id="dataRecebimento"
+                  value={receita.dataRecebimento.toISOString().substr(0, 10)}
+                  onChange={(e) => setReceita({ ...receita, dataRecebimento: new Date(e.target.value) })}
+                  className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100"
+                />
+              </div>
+      
+              {/* Categoria */}
+              <div>
+                <label htmlFor="categoria" className="block text-sm font-medium text-gray-100">Categoria</label>
+                <select
+                  id="categoria"
+                  value={receita.categoria}
+                  onChange={(e) => setReceita({ ...receita, categoria: e.target.value })}
+                  className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100"
+                >
+                  {categorias.map((categoria, index) => (
+                    <option key={index} value={categoria.descricao}>{categoria.descricao}</option>
+                  ))}
+                </select>
+              </div>
+      
+              {/* Tipo */}
+              <div>
+                <label htmlFor="tipo" className="block text-sm font-medium text-gray-100">Tipo</label>
+                <select
+                  id="tipo"
+                  value={receita.tipoReceita}
+                  onChange={(e) => setReceita({ ...receita, tipoReceita: e.target.value as 'Casa' | 'Pessoal' })}
+                  className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100"
+                >
+                  <option value="Casa">Casa</option>
+                  <option value="Pessoal">Pessoal</option>
+                </select>
+              </div>
+      
+              {/* Recebido */}
+              <div>
+                <label htmlFor="recebido" className="block text-sm font-medium text-gray-100">Recebido</label>
+                <select
+                  id="recebido"
+                  value={receita.recebido ? 'Sim' : 'Não'}
+                  onChange={(e) => setReceita({ ...receita, recebido: e.target.value === 'Sim' })}
+                  className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100"
+                >
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+            </div>
+      
+            {/* Action Buttons */}
+            <div className="flex justify-end mt-4 space-x-4">
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="flex gap-2 bg-gray-700 text-white px-4 py-2 rounded-md"
+              >
+                <TiCancel size={24} /> Cancelar
+              </button>
+              <button
+                type="submit"
+                className="flex gap-2 bg-green-800 text-white px-4 py-2 rounded-md"
+              >
+                <HiSave size={24} /> Salvar
+              </button>
+            </div>
+          </form>
         </div>
+      </div>
+      
       )}
       <div className="flex gap-4 mt-4">
         <div>
