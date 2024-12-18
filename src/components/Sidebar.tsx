@@ -4,6 +4,7 @@ import { FiHome, FiTrendingUp, FiDollarSign } from 'react-icons/fi';
 import { TbCategoryPlus } from "react-icons/tb";
 import { MdOutlineAddCard } from "react-icons/md";
 import { AiFillBank } from "react-icons/ai";
+import { HiOutlineWallet } from 'react-icons/hi2';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -22,6 +23,11 @@ const Sidebar: FC<SidebarProps> = ({ isOpen }) => {
         <li className="p-4 hover:bg-gray-700">
           <Link href="/cadastros/categorias" className="flex items-center">
             <TbCategoryPlus className="mr-2" />Categorias
+          </Link>
+        </li>
+        <li className="p-4 hover:bg-gray-700">
+          <Link href="/cadastros/formas-pagamento" className="flex items-center">
+            <HiOutlineWallet className="mr-2" />Formas de Pagamento
           </Link>
         </li>
         <li className="p-4 hover:bg-gray-700">

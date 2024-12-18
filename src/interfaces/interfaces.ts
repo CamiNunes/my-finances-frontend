@@ -20,4 +20,8 @@ export interface DespesaBackend {
   pago: boolean;
   dataVencimento: string;
   tipoReceita: number;
+  formaPagamento: string;
+  cartao?: string;
+  parcelas?: number;
+  valorParcela?: number;
 }

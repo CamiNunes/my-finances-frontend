@@ -1,5 +1,5 @@
 "use client";
-import { criarDespesa, deletarDespesa, listarCategorias, listarDespesas } from "@/api";
+import { criarDespesa, deletarDespesa, listarCategorias, listarDespesas, listarFormasPagamento } from "@/api";
 import { DespesaBackend } from "@/interfaces/interfaces";
 import withAuth from "@/utils/withAuth";
 import { useEffect, useState } from "react";
@@ -13,6 +13,10 @@ interface Categoria {
   descricao: string;
 }
 
+interface FormaPagamento {
+  descricao: string;
+}
+
 interface Despesa {
   id: string;
   descricao: string;
@@ -23,10 +27,15 @@ interface Despesa {
   statusDespesa: string;
   tipoDespesa: 'Casa' | 'Pessoal';
   pago: boolean;
+  formaPagamento: string;
+  cartao?: string;
+  parcelas?: number;
+  valorParcela?: number;
 }
 
 const Despesas = () => {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [formasPagamento, setFormasPagamento] = useState<FormaPagamento[]>([]);
   const [despesa, setDespesa] = useState<Despesa>({
     id: '',
     descricao: '',
@@ -36,7 +45,11 @@ const Despesas = () => {
     categoria: '',
     statusDespesa: '',
     tipoDespesa: 'Casa',
-    pago: true
+    pago: true,
+    formaPagamento: '',
+    cartao: '',
+    parcelas: 0,
+    valorParcela: 0
   });
   const [despesas, setDespesas] = useState<Despesa[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,6 +67,7 @@ const Despesas = () => {
   useEffect(() => {
     fetchCategorias();
     fetchDespesas();
+    fetchFormasPagamento();
   }, []);
 
   useEffect(() => {
@@ -64,6 +78,12 @@ const Despesas = () => {
     const categoriasData = await listarCategorias();
     setCategorias(categoriasData);
     console.log(categoriasData);
+  };
+
+  const fetchFormasPagamento = async () => {
+    const formasPagamentoData = await listarFormasPagamento();
+    setFormasPagamento(formasPagamentoData);
+    console.log(formasPagamentoData);
   };
 
   const fetchDespesas = async () => {
@@ -82,7 +102,11 @@ const Despesas = () => {
       statusReceita: despesa.statusDespesa,
       pago: despesa.pago,
       dataVencimento: despesa.dataVencimento.toISOString(),
-      tipoReceita: despesa.tipoDespesa === 'Casa' ? 1 : 2
+      tipoReceita: despesa.tipoDespesa === 'Casa' ? 1 : 2,
+      formaPagamento: despesa.formaPagamento,
+      cartao: despesa.cartao,
+      parcelas: despesa.parcelas,
+      valorParcela: despesa.valorParcela
     };
   };
 
@@ -124,7 +148,9 @@ const Despesas = () => {
       const novaDespesa = await criarDespesa(despesaBackend);
 
       // Atualize o estado local com a nova receita
-      setDespesas((prevDespesas) => [...prevDespesas, novaDespesa]);
+      //setDespesas((prevDespesas) => [...prevDespesas, novaDespesa]);
+
+      setDespesas((prevDespesas) => Array.isArray(prevDespesas) ? [...prevDespesas, novaDespesa] : [novaDespesa]);
 
       // Limpe os campos do formulário e feche o modal
       setDespesa({
@@ -136,7 +162,11 @@ const Despesas = () => {
         categoria: '',
         statusDespesa: '',
         tipoDespesa: 'Casa',
-        pago: true
+        pago: true,
+        formaPagamento: '',
+        cartao: '',
+        parcelas: 0,
+        valorParcela: 0
       });
       setIsModalOpen(false);
 
@@ -205,6 +235,21 @@ const Despesas = () => {
     }
   };
 
+  const handleFormaPagamentoChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const valor = e.target.value;
+    setDespesa({ ...despesa, formaPagamento: valor });
+
+    // Limpa os campos adicionais se "Cartão de Crédito" não for selecionado
+    if (valor !== 'Cartão de Crédito') {
+      setDespesa((prev) => ({
+        ...prev,
+        cartao: undefined,
+        parcelas: undefined,
+        valorParcela: undefined,
+      }));
+    }
+  };
+
   return (
     <div className="flex flex-col items-center w-full">
       <button onClick={() => setIsModalOpen(true)} className="bg-green-800 text-white px-4 py-2 mt-4 rounded-md w-full">Adicionar Despesa</button>
@@ -213,7 +258,7 @@ const Despesas = () => {
         <div className="bg-zinc-800 p-6 rounded-lg w-full max-w-4xl">
           <form onSubmit={handleSaveDespesa} className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Descrição */}
-            <div className="col-span-1 md:col-span-2">
+            <div className="col-span-1 md:col-span-1">
               <label htmlFor="descricao" className="block text-sm font-medium text-gray-100">Descrição</label>
               <input 
                 type="text" 
@@ -302,7 +347,111 @@ const Despesas = () => {
                 <option value="Não">Não</option>
               </select>
             </div>
-      
+            {/* Forma de Pagamento */}
+            <div>
+              <label htmlFor="formaPagamento" className="block text-sm font-medium text-gray-100">
+                Forma de Pagamento
+              </label>
+              <select
+                id="formaPagamento"
+                value={despesa.formaPagamento}
+                onChange={handleFormaPagamentoChange}
+                className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100"
+              >
+                <option value="" disabled>
+                  Selecione uma forma de pagamento
+                </option>
+                {formasPagamento.map((formaPagamento, index) => (
+                  <option key={index} value={formaPagamento.descricao}>
+                    {formaPagamento.descricao}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            {/* Campos adicionais se "Cartão de Crédito" for selecionado */}
+            {despesa.formaPagamento === 'Cartão de Crédito' && (
+              <div className="mt-4 space-y-4">
+                {/* Nova linha com duas colunas */}
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                  {/* Coluna da esquerda - Cartão */}
+                  <div className="col-span-1 md:col-span-1">
+                    <label htmlFor="cartao" className="block text-sm font-medium text-gray-100">
+                      Cartão
+                    </label>
+                    <select
+                      id="cartao"
+                      value={despesa.cartao || ''}
+                      onChange={(e) => setDespesa({ ...despesa, cartao: e.target.value })}
+                      className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100"
+                    >
+                      <option value="" disabled>
+                        Selecione um cartão
+                      </option>
+                      <option value="Visa">Visa</option>
+                      <option value="MasterCard">MasterCard</option>
+                      <option value="Elo">Elo</option>
+                      <option value="Outro">Outro</option>
+                    </select>
+                  </div>
+
+                  {/* Coluna da direita - Parcelas e Valor por Parcela */}
+                  <div className="grid grid-cols-2 gap-4 col-span-2 md:col-span-2">
+                    
+                    {/* Parcelas */}
+                    <div>
+                      <label htmlFor="parcelas" className="block text-sm font-medium text-gray-100">
+                        Parcelas
+                      </label>
+                      <select
+                        id="parcelas"
+                        value={despesa.parcelas || ''}
+                        onChange={(e) => {
+                          const parcelas = Number(e.target.value);
+                          setDespesa({ 
+                            ...despesa, 
+                            parcelas: parcelas,
+                            valorParcela: parcelas ? despesa.valor / parcelas : 0  // Cálculo do valor por parcela
+                          });
+                        }}
+                        className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100"
+                      >
+                        <option value="" disabled>
+                          Número de parcelas
+                        </option>
+                        {Array.from({ length: 24 }, (_, i) => i + 1).map((num) => (
+                          <option key={num} value={num}>
+                            {num} {num === 1 ? 'parcela' : 'parcelas'}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Valor das Parcelas */}
+                    <div>
+                      <label htmlFor="valorParcelas" className="block text-sm font-medium text-gray-100">
+                        Valor por Parcela
+                      </label>
+                      <input
+                        id="valorParcelas"
+                        type="text" // Usar tipo "text" para manipular a formatação
+                        value={despesa.valorParcela ? despesa.valorParcela.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : ''}
+                        onChange={(e) => {
+                          // Remover o símbolo "R$" e converter para número
+                          const value = e.target.value.replace(/[^\d,.-]/g, '').replace(',', '.');
+                          setDespesa({ ...despesa, valorParcela: value ? parseFloat(value) : 0 });
+                        }}
+                        className="bg-zinc-800 p-2 border border-gray-500 rounded-md w-full text-gray-100 text-right" // Alinha o texto à direita
+                        placeholder="Valor parcela(s)"
+                        disabled // Desabilitar para edição do valor diretamente
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+
             {/* Botões */}
             <div className="col-span-1 md:col-span-2 flex justify-end gap-2">
               <button 

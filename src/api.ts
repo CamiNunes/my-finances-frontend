@@ -69,6 +69,37 @@ export const login = async (email: string, password: string) => {
   }
 };
 
+export const listarFormasPagamento = async () => {
+  try {
+    const response = await api.get('/api/FormasPagamento/listar-forma-pagamento');
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao buscar formas de pagamento:', error);
+    return [];
+  }
+};
+
+export const criarFormaPagamento = async (descricao: string) => {
+  try {
+    const response = await api.post('/api/FormasPagamento/forma-pagamento', { descricao });
+    return response.data; 
+  } catch (error) {
+    console.error('Erro ao criar forma de pagamento:', error);
+    throw error; 
+  }
+};
+
+export const deletarFormaPagamento = async (id: number) => {
+  try {
+    const response = await api.delete(`/api/FormasPagamento/${id}`);
+    console.log(`Forma de Pagamento com ID ${id} deletada com sucesso.`);
+    return response.data; 
+  } catch (error) {
+    console.error(`Erro ao deletar forma de pagamento com ID ${id}:`, error);
+    throw error;
+  }
+};
+
 export const listarCategorias = async () => {
   try {
     const response = await api.get('/api/Categorias/listar-categorias');
